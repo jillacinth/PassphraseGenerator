@@ -1,5 +1,5 @@
 // components/TextBoxComponent.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export const TextInput = ({ label, placeholder, onChange }) => {
   const [value, setValue] = useState("");
@@ -54,6 +54,32 @@ export const SensitiveInput = ({ label, placeholder, onChange }) => {
     </div>
   );
 
+}
+
+export const SecurityQuestion = () => {
+  const [securityQ, setSecurityQ] = useState([]); // Store selected questions
+  const [refreshTrigger, setRefreshTrigger] = useState(0); // Used to trigger re-fetching
+  
+  const refreshQuestions = () => {
+      setRefreshTrigger(prev => prev + 1); //sets trigger for refresh
+  }
+
+  useEffect(() => { //fetches Security questions from database
+      fetch('http://localhost:8081/RandomSecurityQs')
+          .then(res => res.json())
+          .then(data => setSecurityQ(data))
+          .catch(err => console.error("Error fetching data:", err));
+  }, [refreshTrigger]); // Refreshes questions when button hit
+  
+  return (
+    <div>
+      {/* Refresh Button */}
+      {securityQ.map((q)=> (
+          <SensitiveInput key={q.QNum} label={`${q.QContent}`} placeholder="Type here" />
+      ))}
+      <button onClick={refreshQuestions}>Refresh Question</button>
+    </div>
+  );
 };
 
 

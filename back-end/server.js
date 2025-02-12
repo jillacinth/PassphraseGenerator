@@ -27,22 +27,12 @@ app.get('/SecurityQs', (req, res) =>{
 })
 
 app.get('/RandomSecurityQs', (req, res) =>{
-    const sql = "SELECT * FROM SecurityQs ORDER BY RAND() LIMIT 5";
+    const sql = "SELECT * FROM SecurityQs ORDER BY RAND() LIMIT 1";
     db.query(sql, (err, data) => {
         if(err) return res.json(err);
         return res.json(data);
     })
 })
-
-app.get('/RandomSecurityQs', (req, res) =>{
-    const sql = "SELECT * FROM SecurityQs ORDER BY RAND() LIMIT 5";
-    db.query(sql, (err, data) => {
-        if(err) return res.json(err);
-        return res.json(data);
-    })
-})
-
-
 
 /* make a user one
 app.get('/SecurityQs', (req, res) =>{
