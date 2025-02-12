@@ -1,5 +1,5 @@
 // pages/index.js
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Menu } from '../components/Menu';
 
 
