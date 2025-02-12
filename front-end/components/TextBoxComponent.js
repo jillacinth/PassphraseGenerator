@@ -1,5 +1,5 @@
 // components/TextBoxComponent.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export const TextInput = ({ label, placeholder, onChange }) => {
   const [value, setValue] = useState("");
@@ -54,6 +54,49 @@ export const SensitiveInput = ({ label, placeholder, onChange }) => {
     </div>
   );
 
+}
+
+export const SecurityQuestion = ({ index, onAnswerChange }) => {
+  const [securityQ, setSecurityQ] = useState([]); // Store selected questions
+  const [answer, setAnswer] = useState("");
+  const [refreshTrigger, setRefreshTrigger] = useState(0); // Used to trigger re-fetching
+  
+  const refreshQuestions = () => {
+      setRefreshTrigger(prev => prev + 1); //sets trigger for refresh
+  }
+
+  useEffect(() => { //fetches Security questions from database
+      fetch('http://localhost:8081/RandomSecurityQs')
+          .then(res => res.json())
+          .then(data => {
+            setSecurityQ(data[0]);
+            onAnswerChange(index,data[0].QNum, ""); //QNum is updated
+          })
+          .catch(err => console.error("Error fetching data:", err));
+  }, [refreshTrigger]); // Refreshes questions when button hit
+  
+
+  const handleAnswerChange = (value) => {
+    setAnswer(value);
+    if (securityQ) {
+      onAnswerChange(index, securityQ.QNum, value);
+    }
+  };
+
+  return (
+    <div>
+      {securityQ ? (  // Since securityQ is a single object, no need for .map()
+          <SensitiveInput
+              label={securityQ.QContent}
+              placeholder="Type here"
+              onChange={handleAnswerChange}
+          />
+      ) : (
+          <p>Loading question...</p>
+      )}
+      <button onClick={refreshQuestions}>Refresh Question</button>
+    </div>
+  );
 };
 
 
