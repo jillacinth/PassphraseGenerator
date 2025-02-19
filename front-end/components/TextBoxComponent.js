@@ -1,5 +1,6 @@
 // components/TextBoxComponent.js
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+//import '../index.css';
 
 export const TextInput = ({ label, placeholder, onChange }) => {
   const [value, setValue] = useState("");
@@ -9,15 +10,19 @@ export const TextInput = ({ label, placeholder, onChange }) => {
     if (onChange) onChange(e.target.value);
   };
 
+  const divStyle = {
+    marginBottom: '20px', // Adds space below each div
+    padding: '10px',      // Adds space inside the div
+  };
+
   return (
-    <div className="flex flex-col">
-      {label && <label className="mb-1 text-sm font-medium">{label} <br /> </label>}
+    <div style={divStyle}>
+      {label && <label>{label} <br /> </label>}
       <input
         type="text"
         value={value}
         onChange={handleChange}
         placeholder={placeholder}
-        className="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
     </div>
   );
@@ -27,26 +32,30 @@ export const SensitiveInput = ({ label, placeholder, onChange }) => {
   const [value, setValue] = useState("");
   const [isVisible, setIsVisible] = useState(false); // State to toggle visibility
   
+  const divStyle = {
+    marginBottom: '20px', // Adds space below each div
+    padding: '10px',      // Adds space inside the div
+  };
+
+
   const handleChange = (e) => {
     setValue(e.target.value);
     if (onChange) onChange(e.target.value);
   };
 
   return (
-    <div className="flex flex-col">
-      {label && <label className="mb-1 text-sm font-medium">{label}</label>}
-      <div className="relative flex items-center">
+    <div style={divStyle}>
+      {label && <label>{label}</label>}
+      <div>
         <input
           type={isVisible ? "text" : "password"} // Toggle between text & password
           value={value}
           onChange={handleChange}
           placeholder={placeholder}
-          className="border rounded-lg p-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
         />
         <button
           type="button"
           onClick={() => setIsVisible(!isVisible)}
-          className="absolute right-2 text-sm text-blue-500 hover:underline"
         >
           {isVisible ? "Hide" : "Show"}
         </button>
@@ -61,6 +70,22 @@ export const SecurityQuestion = ({ index, onAnswerChange }) => {
   const [answer, setAnswer] = useState("");
   const [refreshTrigger, setRefreshTrigger] = useState(0); // Used to trigger re-fetching
   
+  const divStyle = {
+    marginBottom: '20px',  // Adds space between this and the next div
+    padding: '15px',       // Adds space inside the div content
+    backgroundColor: '#f0f0f0', // Example background for better visibility
+  }
+
+  const buttonStyle = { 
+    backgroundColor: '#6272a4',
+    color: 'white',
+    borderRadius: '6px',
+    border: 'none',
+    cursor: "pointer",
+    fontSize: "16px",
+    transition: "background 0.3s"
+  }
+
   const refreshQuestions = () => {
       setRefreshTrigger(prev => prev + 1); //sets trigger for refresh
   }
@@ -84,7 +109,7 @@ export const SecurityQuestion = ({ index, onAnswerChange }) => {
   };
 
   return (
-    <div>
+    <div style={divStyle}>
       {securityQ ? (  // Since securityQ is a single object, no need for .map()
           <SensitiveInput
               label={securityQ.QContent}
@@ -94,7 +119,7 @@ export const SecurityQuestion = ({ index, onAnswerChange }) => {
       ) : (
           <p>Loading question...</p>
       )}
-      <button onClick={refreshQuestions}>Refresh Question</button>
+      <button style={buttonStyle} onClick={refreshQuestions}>Refresh Question</button>
     </div>
   );
 };
