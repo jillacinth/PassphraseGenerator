@@ -62,12 +62,6 @@ def upload_to_mysql(questions, db_config):
 
 if __name__ == "__main__":
     file_path = "questions.txt"
-    db_config = {
-        "host": "sql1.njit.edu",
-        "user": "pk577",
-        "password": "Data147159!!",
-        "database": "pk577"
-    }
     
     questions = extract_questions(file_path)
     
