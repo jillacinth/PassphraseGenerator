@@ -12,6 +12,7 @@
   "author": "Jillian Jacinto, Patrick Krawczyk",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "bootstrap": "^5.3.3",
     "next": "^15.1.6",
     "react": "^19.0.0",

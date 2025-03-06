@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import bcrypt from 'bcryptjs';
+import React, { useState } from 'react';
 import { ReturnToMain } from '../components/Menu';
 import { SecurityQuestion, TextInput } from '../components/TextBoxComponent';
+import { SALT } from '../components/salt';
 
 export const Create = () => {
     const [securityAnswers, setSecurityAnswers] = useState({
-        website: {site: ""}, 
         user: {username: ""},
-        q1: { QNum: null, answer: "" },
-        q2: { QNum: null, answer: "" },
-        q3: { QNum: null, answer: "" },
-        q4: { QNum: null, answer: "" },
-        q5: { QNum: null, answer: "" },
+        passphrase: { answer: ""},
+        q1: { QNum: null},
+        q2: { QNum: null},
+        q3: { QNum: null},
+        q4: { QNum: null},
+        q5: { QNum: null},
     });
 
     const handleWebsiteChange = (answer) => {
@@ -23,21 +25,49 @@ export const Create = () => {
     const handleUsernameChange = (answer) => {
         setSecurityAnswers((prev) => ({
             ...prev,
-            ["user"]: { answer },
+            user: { username: answer }, // Correctly store the username
         }));
     };
+    
 
     const handleSecurityAnswerChange = (index, QNum, answer) => {
-        setSecurityAnswers((prev) => ({
-            ...prev,
-            [`q${index}`]: { QNum, answer },
-        }));
+        setSecurityAnswers((prev) => {
+            // Ensure we store QNum separately and answers in a different structure
+            const updatedAnswers = {
+                ...prev,
+                [`q${index}`]: { QNum }, // Store only QNum for q1 to q5
+                [`q${index}_answer`]: answer, // Store answers separately
+            };
+    
+            // Generate passphrase by concatenating all stored answers
+            const passphrase = [1, 2, 3, 4, 5]
+                .map((num) => updatedAnswers[`q${num}_answer`] || "") // Ensure we use the latest state
+                .join(""); // Concatenate answers
+    
+            const hashedPassword = bcrypt.hashSync(passphrase, SALT);
+            return {
+                ...updatedAnswers,
+                passphrase: { answer: hashedPassword }, // Store hashed passphrase
+            };
+        });
     };
 
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Saved Data:", securityAnswers);
+        
+        try {
+            const response = await fetch('http://localhost:8081/save-passphrase', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(securityAnswers)
+            });
+            
+            const data = await response.json();
+            console.log(data); //shows if server responded
+            alert("Acccount and passphrase saved successfully!");
+        } catch (error) {
+            console.error("Error saving account details: ", error);
+        }
     };
 
     return (
