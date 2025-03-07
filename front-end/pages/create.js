@@ -15,17 +15,19 @@ export const Create = () => {
         q5: { QNum: null},
     });
 
+    /*
     const handleWebsiteChange = (answer) => {
         setSecurityAnswers((prev) => ({
             ...prev,
             ["website"]: { answer },
         }));
     };
+    */
 
     const handleUsernameChange = (answer) => {
         setSecurityAnswers((prev) => ({
             ...prev,
-            user: { username: answer }, // Correctly store the username
+            user: { username: answer }, 
         }));
     };
     
@@ -61,7 +63,7 @@ export const Create = () => {
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(securityAnswers)
             });
-            
+
             const data = await response.json();
             console.log(data); //shows if server responded
             alert("Acccount and passphrase saved successfully!");
@@ -81,7 +83,6 @@ export const Create = () => {
                 Try to remember any capitilization
             </div>
             <h2>Login Information</h2>
-            <TextInput label="Website" placeholder="Type here" onChange={handleWebsiteChange}/>
             <TextInput label="Username/Email" placeholder="Type here" onChange={handleUsernameChange}/>
             <h2>Select and answer 5 security questions:</h2>
             {[1, 2, 3, 4, 5].map((num) => (
