@@ -36,7 +36,7 @@ app.get('/RandomSecurityQs', (req, res) =>{
 })
 
 app.get('/Users', (req, res) =>{
-    const sql = "SELECT * FROM MSUsers ORDER BY RAND() LIMIT 1";
+    const sql = "SELECT * FROM MSUsers";
     db.query(sql, (err, data) => {
         if(err) return res.json(err);
         return res.json(data);
@@ -45,13 +45,14 @@ app.get('/Users', (req, res) =>{
 
 //creates passwords for new users
 app.post('/save-passphrase', (req, res) => {
-    const {user, passphrase, q1, q2, q3, q4, q5, } = req.body;
+    const {user, passphrase, salt, q1, q2, q3, q4, q5, } = req.body;
 
-    const sql = `INSERT INTO MSUsers (Username, HashPass, Q1, Q2, Q3, Q4, Q5) VALUES ('${user.username}', '${passphrase.answer}', ${q1?.QNum || 'NULL'}, ${q2?.QNum || 'NULL'}, ${q3?.QNum || 'NULL'}, ${q4?.QNum || 'NULL'}, ${q5?.QNum || 'NULL'})`;
+    const sql = `INSERT INTO MSUsers (Username, HashPass, HashSalt, Q1, Q2, Q3, Q4, Q5) VALUES ('${user.username}', '${passphrase.answer}', '${salt.pswdSalt}', ${q1?.QNum || 'NULL'}, ${q2?.QNum || 'NULL'}, ${q3?.QNum || 'NULL'}, ${q4?.QNum || 'NULL'}, ${q5?.QNum || 'NULL'})`;
 
     const values = [
         user.username,
         passphrase.answer,
+        salt.pswdSalt,
         q1?.QNum || null,
         q2?.QNum || null,
         q3?.QNum || null,

@@ -4,10 +4,16 @@ import React from "react";
 export const Menu = () => {
     const router = useRouter(); // Use Next.js router
 
+    const handleLogout = () => {
+        localStorage.removeItem("authenticated");
+        router.push("/LoginPage");
+    };
+
     return (
         <div>
-            <button onClick={() => router.push("/getPassword")}>Go to GetPassword</button> <br></br>
-            <button onClick={() => router.push("/create")}>Go to Create Passphrase</button><br></br>
+            <button onClick={() => router.push("/getPassword")}>Retrieve Password</button> <br></br>
+            <button onClick={() => router.push("/create")}>Create Passphrase</button><br></br>
+            <button onClick={handleLogout}>Logout</button><br></br>
         </div>
     );
 };

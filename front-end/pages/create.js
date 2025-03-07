@@ -8,12 +8,18 @@ export const Create = () => {
     const [securityAnswers, setSecurityAnswers] = useState({
         user: {username: ""},
         passphrase: { answer: ""},
+        salt: {pswdSalt: ""},
         q1: { QNum: null},
         q2: { QNum: null},
         q3: { QNum: null},
         q4: { QNum: null},
         q5: { QNum: null},
     });
+
+    const divStyle = {
+        marginBottom: '200px',
+        fontFamily: 'sans-serif',
+    };
 
     /*
     const handleWebsiteChange = (answer) => {
@@ -45,11 +51,13 @@ export const Create = () => {
             const passphrase = [1, 2, 3, 4, 5]
                 .map((num) => updatedAnswers[`q${num}_answer`] || "") // Ensure we use the latest state
                 .join(""); // Concatenate answers
-    
+            
+            const saveSalt = SALT;
             const hashedPassword = bcrypt.hashSync(passphrase, SALT);
             return {
                 ...updatedAnswers,
                 passphrase: { answer: hashedPassword }, // Store hashed passphrase
+                salt: {pswdSalt : saveSalt},
             };
         });
     };
@@ -65,15 +73,16 @@ export const Create = () => {
             });
 
             const data = await response.json();
-            console.log(data); //shows if server responded
+            console.log(securityAnswers);
             alert("Acccount and passphrase saved successfully!");
+            router.push("/LoginPage");
         } catch (error) {
             console.error("Error saving account details: ", error);
         }
     };
 
     return (
-        <div>
+        <div style={divStyle}>
             <ReturnToMain />
             <h1>Passphrase Generator</h1>
             <h2>Instructions</h2>

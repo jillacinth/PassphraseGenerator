@@ -1,6 +1,7 @@
+import bcrypt from "bcryptjs";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { TextInput } from '../components/TextBoxComponent';
+import { SensitiveInput, TextInput } from '../components/TextBoxComponent';
 
 export const LoginPage = () => {
     const router = useRouter(); // Use Next.js router
@@ -14,10 +15,15 @@ export const LoginPage = () => {
         q4: { QNum: null, question: ""},
         q5: { QNum: null, question: ""},
     });
+    const [passphrase, setPassphrase] = useState("");
 
     const divStyle = {
-        marginBottom: '20px',
+        marginBottom: '200px',
         backgroundColor: '#f0f0f0',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        fontFamily: 'sans-serif',
     };
     
     const buttonStyle = { 
@@ -27,7 +33,8 @@ export const LoginPage = () => {
         border: 'none',
         cursor: "pointer",
         fontSize: "16px",
-        transition: "background 0.3s"
+        transition: "background 0.3s",
+        marginBottom: '5px',
     };
 
     // Fetch users from the database (assuming your backend is already set up)
@@ -78,16 +85,9 @@ export const LoginPage = () => {
     
 
     // Handle login logic
-    const handleLogin = () => {
-        // Log the username entered by the user
-        console.log("Entered Username: ", usernameInput);
-    
+    const handleUser = () => {   
         if (users && users.length > 0) {
-            const user = users.find((user) => user.Username === usernameInput);
-    
-            // Log the found user to verify
-            console.log("Found User: ", user);
-    
+            const user = users.find((user) => user.Username === usernameInput);    
             if (user) {
                 // Access and log the specific columns
                 setSecurityQs((prev) => ({
@@ -101,26 +101,49 @@ export const LoginPage = () => {
     
                 //router.push("/dashboard");  // Redirect to dashboard or another page
             } else {
-                console.log("User not found");
                 alert("User not found. Please try again or create a new account.");
             }
         } else {
             console.log("No users found or data is empty.");
         }
+    }
+
+    const handlePassword = (passphrase) => {
+        setPassphrase(passphrase);
     };
+
+    const handleLogin = () => {
+        const user = users.find((user) => user.Username === usernameInput);    
+        const hashedPassphrase = bcrypt.hashSync(passphrase, user.HashSalt);
+        console.log(user.HashPass);
+        console.log(hashedPassphrase);
+        if (hashedPassphrase === user.HashPass) {
+            console.log("access Granted");
+            localStorage.setItem("authenticated", "true"); //user logged in and can access other pages
+            router.push("/");
+        } else {
+            alert("Incorrect Password");
+        }
+    }
     
 
     return (
         <div style={divStyle}>
-            <h1>Login or Create New user</h1>
+            <h1>Login</h1>
             <TextInput 
                 label="Enter Your Username" 
                 placeholder="Type here" 
                 onChange={handleUsernameChange} 
                 value={usernameInput} // Bind the username to input field
             />
-
-            <button style={buttonStyle} onClick={handleLogin}>Login</button>
+            <button style={buttonStyle} onClick={handleUser}>Check User</button>
+            <SensitiveInput 
+                label={securityQs.q1.question + ", " + securityQs.q2.question + ", " + securityQs.q3.question +  ", " + securityQs.q4.question + ", " + securityQs.q5.question}
+                placeholder="Type Here"
+                value={passphrase}
+                onChange={handlePassword}
+            />
+            <button style={buttonStyle} onClick={handleLogin}>Login</button> <br></br>
             <button style={buttonStyle} onClick={() => router.push("/create")}>Create New User</button><br />
         </div>
     );
