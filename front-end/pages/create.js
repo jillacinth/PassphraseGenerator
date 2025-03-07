@@ -21,15 +21,6 @@ export const Create = () => {
         fontFamily: 'sans-serif',
     };
 
-    /*
-    const handleWebsiteChange = (answer) => {
-        setSecurityAnswers((prev) => ({
-            ...prev,
-            ["website"]: { answer },
-        }));
-    };
-    */
-
     const handleUsernameChange = (answer) => {
         setSecurityAnswers((prev) => ({
             ...prev,

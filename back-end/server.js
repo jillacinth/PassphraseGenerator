@@ -49,19 +49,6 @@ app.post('/save-passphrase', (req, res) => {
 
     const sql = `INSERT INTO MSUsers (Username, HashPass, HashSalt, Q1, Q2, Q3, Q4, Q5) VALUES ('${user.username}', '${passphrase.answer}', '${salt.pswdSalt}', ${q1?.QNum || 'NULL'}, ${q2?.QNum || 'NULL'}, ${q3?.QNum || 'NULL'}, ${q4?.QNum || 'NULL'}, ${q5?.QNum || 'NULL'})`;
 
-    const values = [
-        user.username,
-        passphrase.answer,
-        salt.pswdSalt,
-        q1?.QNum || null,
-        q2?.QNum || null,
-        q3?.QNum || null,
-        q4?.QNum || null,
-        q5?.QNum || null,
-    ];
-    
-    console.log('SQL values:', values);
-
     db.query(sql, (err, data) => {
         if(err) return res.json(err);
         return res.json(data);

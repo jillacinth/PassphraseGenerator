@@ -12,7 +12,7 @@ export const Menu = () => {
     return (
         <div>
             <button onClick={() => router.push("/getPassword")}>Retrieve Password</button> <br></br>
-            <button onClick={() => router.push("/create")}>Create Passphrase</button><br></br>
+            <button onClick={() => router.push("/CreatePassphrase")}>Create Passphrase</button><br></br>
             <button onClick={handleLogout}>Logout</button><br></br>
         </div>
     );
