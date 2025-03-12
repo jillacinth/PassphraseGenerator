@@ -120,7 +120,9 @@ export const LoginPage = () => {
         if (hashedPassphrase === user.HashPass) {
             console.log("access Granted");
             localStorage.setItem("authenticated", "true"); //user logged in and can access other pages
+            localStorage.setItem("currentUser", user.Username); //user logged in and can access other pages
             router.push("/");
+            //alert("Signed in as " + localStorage.getItem("currentUser"));
         } else {
             alert("Incorrect Password");
         }

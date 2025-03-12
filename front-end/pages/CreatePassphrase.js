@@ -17,6 +17,7 @@ export const CreatePassphrase = () => {
     const [q3, setQ3] = useState(0);
     const [q4, setQ4] = useState(0);
     const [q5, setQ5] = useState(0);
+    const currentUser = localStorage.getItem("currentUser")
 
       useEffect(() => {
           if (typeof window !== "undefined") {
@@ -86,10 +87,11 @@ export const CreatePassphrase = () => {
             return; // Exit early if no website is provided
         }
         const passphraseData = {
-            website: website,
-            username: username,
             passphrase: passphrase, // Assuming this is already hashed
-            salt: salt, // Assuming salt is a constant
+            user: currentUser,
+            username: username,
+            website: website,
+            salt: salt,
             q1: q1,
             q2: q2,
             q3: q3,
