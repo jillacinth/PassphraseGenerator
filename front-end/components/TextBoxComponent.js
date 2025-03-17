@@ -74,6 +74,7 @@ export const SecurityQuestion = ({ index, onAnswerChange }) => {
     marginBottom: '20px',  // Adds space between this and the next div
     padding: '15px',       // Adds space inside the div content
     backgroundColor: '#f0f0f0', // Example background for better visibility
+    fontFamily: 'sans-serif'
   }
 
   const buttonStyle = { 
@@ -123,6 +124,4 @@ export const SecurityQuestion = ({ index, onAnswerChange }) => {
     </div>
   );
 };
-
-
 
