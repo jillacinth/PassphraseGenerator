@@ -1,12 +1,32 @@
 import bcrypt from 'bcryptjs';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ReturnToMain } from '../components/Menu';
 import { SecurityQuestion, TextInput } from '../components/TextBoxComponent';
 import { SALT } from '../components/salt';
 
 export const Create = () => {
     const router = useRouter(); // Use Next.js router
+    const [users, setUsers] = useState([]);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await fetch('http://localhost:8081/Users');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user data');
+                }
+                const userData = await response.json();
+                //console.log(userData);
+                setUsers(userData);
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        };
+
+        fetchUsers();
+    }, []); // Empty array default
+
     const [securityAnswers, setSecurityAnswers] = useState({
         user: {username: ""},
         passphrase: { answer: ""},
@@ -78,7 +98,10 @@ export const Create = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+        if (users.find((user) => user.Username === securityAnswers.user.username)) { 
+            alert("Username already in use");
+            return;
+        }
         try {
             const response = await fetch('http://localhost:8081/save-passphrase', {
                 method: 'POST',
@@ -91,7 +114,7 @@ export const Create = () => {
             router.push("/LoginPage");
         } catch (error) {
             console.error("Error saving account details: ", error);
-        }
+        }    
     };
 
     return (
