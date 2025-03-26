@@ -15,7 +15,14 @@ export const GetPassword = () => {
     const [userInput, setUserInput] = useState("");
     const [salt, setSalt] = useState("");
     const [hashedPass, setHashedPass] = useState("");
-    const input = "";
+    const [currUser, setCurrentUser] = useState("");
+    const [userPassphrases, setUserPassphrases] = useState([]);
+    //const input = "";
+
+    const websiteButton = {
+        marginBottom: '10px', /* Adds space below each button */
+        display: 'block', /* Ensures buttons are on separate lines */
+    };
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -24,7 +31,27 @@ export const GetPassword = () => {
                 router.push("/LoginPage");
             }
         }
+        //console.log(localStorage.getItem("currentUser"));
+        const currentUserFromLocalStorage = localStorage.getItem("currentUser");
+        setCurrentUser(currentUserFromLocalStorage);
+        //console.log(`current user is ${currUser}`);
+        handleFetchWebsites();
     }, [])
+
+    useEffect(() => {
+        if (currUser) {
+            //console.log(`Current user after update: ${currUser}`);  // Log after currUser is updated
+            handleFetchWebsites();
+        }
+    }, [currUser]); 
+
+    useEffect(() => {
+        if (userPassphrases) {
+            //console.log(`Current user after update: ${currUser}`);  // Log after currUser is updated
+            handleFetchWebsites();
+        }
+    }, [userPassphrases]); 
+
     useEffect(() => {
         const fetchQs = async () => {
             try {
@@ -46,11 +73,13 @@ export const GetPassword = () => {
     const handleFetchWebsites = async () => {
         try {
             // Fetch all entries from the passphrases table
-            const currentUser = localStorage.getItem("currentUser");
             const allPassphrases = await db.passphrases.toArray();
-            const userPassphrases = allPassphrases.filter(entry => entry.user === currentUser);
+            setUserPassphrases(allPassphrases.filter(entry => entry.user === currUser));
             const websites = userPassphrases.map(entry => entry.website);
             setWebsiteList(websites);
+            //console.log(allPassphrases);
+            //console.log(currUser);
+            //console.log(userPassphrases);
         } catch (error) {
             console.error('Failed to fetch websites:', error);
         }
@@ -60,8 +89,8 @@ export const GetPassword = () => {
         try {
             setCurrentWebsite(website);
             const accountInfo = await db.passphrases.where('website').equalsIgnoreCase(website).toArray();
-            console.log(accountInfo[0]);
-            const { passphrase, use, username, web, salt, q1, q2, q3, q4, q5 } = accountInfo[0];  // Get the first matching entry
+            //console.log(accountInfo);
+            const { passphrase, user, username, web, salt, q1, q2, q3, q4, q5 } = accountInfo[0];  // Get the first matching entry
             const question1 = allQs.find((quest) => quest.QNum === q1).QContent; //finds questions from all questions
             const question2 = allQs.find((quest) => quest.QNum === q2).QContent;
             const question3 = allQs.find((quest) => quest.QNum === q3).QContent;
@@ -73,7 +102,7 @@ export const GetPassword = () => {
             setQuestionList([question1, question2, question3, question4, question5]);
             setHashedPass(passphrase);
             setSalt(salt);
-            console.log(passphrase);
+            //console.log(salt);
         } catch (error) {
             console.error('Failed to fetch Account Details:', error);
         }
@@ -93,8 +122,6 @@ export const GetPassword = () => {
         //console.log("Hashed Input:", hashedInput);
         //console.log("Stored Hashed Pass:", hashedPass);
 
-   
-
         if (isMatch)  {
             alert("That passphrase is correct");
         } else {
@@ -104,29 +131,62 @@ export const GetPassword = () => {
 
     }
 
+    const handleDelete = async () => {
+        console.log(`Current website: ${currentWebsite}`);  // Check if website is set correctly
+        console.log(`Hashed pass: ${hashedPass}`);          // Check if hashedPass is set correctly
+        
+        try {
+            await db.passphrases
+                .where('salt')
+                .equals(salt)  // Matches the passphrase
+                .delete();  // Deletes the matching entry
+            console.log(`Deleted entry for ${currentWebsite}`);
+            //window.location.reload();
+        } catch (error) {
+            console.error("Failed to delete entry:", error);
+        }
+    };
+    
+
     return (
         <div>
             <ReturnToMain />
             <h1>Retrieve Password</h1>
             <h2>Sites with Passphrases</h2>
-            <button onClick={handleFetchWebsites}>Show Websites</button>
             <ul>
-                {websiteList.map((website, index) => (
-                    <button 
+                {websiteList.length === 0 ?  (
+                    <p>No Entries</p>
+                ) : (
+                websiteList.map((website, index) => (
+                    <button style={websiteButton}
                         key={index} 
                         onClick={() => handleWebsiteClick(website)} 
                         className="website-button"
                     >
                         {website}
                     </button>
-                ))}
+                )))}
             </ul>
-            <SensitiveInput 
-                label={"Username for " + currentWebsite + ": " + username + "\n" + questionList[0] + ", " + questionList[1] + ", " + questionList[2] +  ", " + questionList[3] + ", " + questionList[4]}
-                placeholder="Type Here" onChange={handlePasswordInput} value={userInput}
-            />
-            <button onClick={handlePasswordCheck}>Check</button> <br></br>
-            <button onClick={() => router.push("/create")}>Forgot Password? (this will delete password and you can remake it)</button><br />
+            {currentWebsite && questionList.length >= 5 && (
+                <>
+                    <SensitiveInput 
+                        label={ <> Username for {currentWebsite}: {username} <br /> 
+                        Question 1: {questionList[0]} <br /> 
+                        Question 2: {questionList[1]} <br /> 
+                        Question 3: {questionList[2]} <br /> 
+                        Question 4: {questionList[3]} <br /> 
+                        Question 5: {questionList[4]}` 
+                        </>
+                        }
+                        placeholder="Type Here" 
+                        onChange={handlePasswordInput} 
+                        value={userInput}
+                    />
+                    <button style={websiteButton} onClick={handlePasswordCheck}>Check</button>
+                    <button style={websiteButton} onClick={() => router.push("/create")}>Forgot Password? (this will delete password and you can remake it)</button>
+                    <button style={websiteButton} onClick={handleDelete}>Delete</button>
+                </>
+            )}
 
         </div>
     );
