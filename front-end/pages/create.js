@@ -1,10 +1,32 @@
 import bcrypt from 'bcryptjs';
-import React, { useState } from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import { ReturnToMain } from '../components/Menu';
 import { SecurityQuestion, TextInput } from '../components/TextBoxComponent';
 import { SALT } from '../components/salt';
 
 export const Create = () => {
+    const router = useRouter(); // Use Next.js router
+    const [users, setUsers] = useState([]);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await fetch('http://localhost:8081/Users');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user data');
+                }
+                const userData = await response.json();
+                //console.log(userData);
+                setUsers(userData);
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        };
+
+        fetchUsers();
+    }, []); // Empty array default
+
     const [securityAnswers, setSecurityAnswers] = useState({
         user: {username: ""},
         passphrase: { answer: ""},
@@ -20,15 +42,27 @@ export const Create = () => {
         marginBottom: '200px',
         fontFamily: 'sans-serif',
     };
-
-    /*
-    const handleWebsiteChange = (answer) => {
-        setSecurityAnswers((prev) => ({
-            ...prev,
-            ["website"]: { answer },
-        }));
+    const header = {
+        marginBottom: '25px',
+        backgroundColor: '#6272a4',
+        color: 'white',
+        fontFamily: 'sans-serif',
+        paddingTop: '15px',
+        paddingBottom: '15px',
+        margin: 'auto',
+        textAlign: 'center',
     };
-    */
+
+    const saveButton = {
+        backgroundColor: '#6272a4',
+        color: 'white',
+        borderRadius: '6px',
+        border: 'none',
+        cursor: "pointer",
+        fontSize: "24px",
+        transition: "background 0.3s",
+        marginBottom: '15px',
+    };
 
     const handleUsernameChange = (answer) => {
         setSecurityAnswers((prev) => ({
@@ -64,7 +98,10 @@ export const Create = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+        if (users.find((user) => user.Username === securityAnswers.user.username)) { 
+            alert("Username already in use");
+            return;
+        }
         try {
             const response = await fetch('http://localhost:8081/save-passphrase', {
                 method: 'POST',
@@ -73,18 +110,19 @@ export const Create = () => {
             });
 
             const data = await response.json();
-            console.log(securityAnswers);
             alert("Acccount and passphrase saved successfully!");
             router.push("/LoginPage");
         } catch (error) {
             console.error("Error saving account details: ", error);
-        }
+        }    
     };
 
     return (
         <div style={divStyle}>
+            <div style={header}>
+                <h1>Passphrase Generator</h1>
+            </div>
             <ReturnToMain />
-            <h1>Passphrase Generator</h1>
             <h2>Instructions</h2>
             <div>
                 You can refresh the questions if you'd prefer new questions <br></br>
@@ -104,7 +142,7 @@ export const Create = () => {
                 </div>
             ))}
 
-            <button onClick={handleSubmit}>Save Data</button>
+            <button style={saveButton} onClick={handleSubmit}>Save Data</button>
         </div>
     );
 };

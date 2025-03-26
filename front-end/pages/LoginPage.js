@@ -8,6 +8,7 @@ export const LoginPage = () => {
     const [usernameInput, setUsername] = useState("");
     const [users, setUsers] = useState([]);
     const [allQs, setAllQs] = useState([]);
+    const [userInputed, setUserInputed] = useState(0);
     const [securityQs, setSecurityQs] = useState({
         q1: { QNum: null, question: ""},
         q2: { QNum: null, question: ""},
@@ -18,12 +19,23 @@ export const LoginPage = () => {
     const [passphrase, setPassphrase] = useState("");
 
     const divStyle = {
-        marginBottom: '200px',
         backgroundColor: '#f0f0f0',
         justifyContent: 'center',
         alignItems: 'center',
         textAlign: 'center',
         fontFamily: 'sans-serif',
+        height: '100vh',
+    };
+
+    const header = {
+        backgroundColor: '#6272a4',
+        color: 'white',
+        fontFamily: 'sans-serif',
+        paddingTop: '15px',
+        paddingBottom: '15px',
+        margin: 'auto',
+        alignItems: 'center',
+        textAlign: 'center',
     };
     
     const buttonStyle = { 
@@ -34,7 +46,7 @@ export const LoginPage = () => {
         cursor: "pointer",
         fontSize: "16px",
         transition: "background 0.3s",
-        marginBottom: '5px',
+        marginBottom: '15px',
     };
 
     // Fetch users from the database (assuming your backend is already set up)
@@ -80,7 +92,7 @@ export const LoginPage = () => {
     };
 
     useEffect(() => {
-        console.log("Updated securityQs: ", securityQs);
+        //console.log("Updated securityQs: ", securityQs);
     }, [securityQs]);  // This will run whenever securityQs is updated
     
 
@@ -88,6 +100,7 @@ export const LoginPage = () => {
     const handleUser = () => {   
         if (users && users.length > 0) {
             const user = users.find((user) => user.Username === usernameInput);    
+            setUserInputed(1);
             if (user) {
                 // Access and log the specific columns
                 setSecurityQs((prev) => ({
@@ -115,12 +128,14 @@ export const LoginPage = () => {
     const handleLogin = () => {
         const user = users.find((user) => user.Username === usernameInput);    
         const hashedPassphrase = bcrypt.hashSync(passphrase, user.HashSalt);
-        console.log(user.HashPass);
-        console.log(hashedPassphrase);
+        //console.log(user.HashPass);
+        //console.log(hashedPassphrase);
         if (hashedPassphrase === user.HashPass) {
-            console.log("access Granted");
+            //console.log("access Granted");
             localStorage.setItem("authenticated", "true"); //user logged in and can access other pages
+            localStorage.setItem("currentUser", user.Username); //user logged in and can access other pages
             router.push("/");
+            //alert("Signed in as " + localStorage.getItem("currentUser"));
         } else {
             alert("Incorrect Password");
         }
@@ -129,6 +144,9 @@ export const LoginPage = () => {
 
     return (
         <div style={divStyle}>
+            <div style={header}>
+                <h1>Passphrase Generator</h1>
+            </div>
             <h1>Login</h1>
             <TextInput 
                 label="Enter Your Username" 
@@ -137,14 +155,24 @@ export const LoginPage = () => {
                 value={usernameInput} // Bind the username to input field
             />
             <button style={buttonStyle} onClick={handleUser}>Check User</button>
-            <SensitiveInput 
-                label={securityQs.q1.question + ", " + securityQs.q2.question + ", " + securityQs.q3.question +  ", " + securityQs.q4.question + ", " + securityQs.q5.question}
+            { userInputed === 1 && (
+                <>
+                <SensitiveInput 
+                label={<> 
+                Question 1: {securityQs.q1.question} <br />
+                Question 2: {securityQs.q2.question} <br /> 
+                Question 3: {securityQs.q3.question} <br /> 
+                Question 4: {securityQs.q4.question} <br />
+                Question 5: {securityQs.q5.question} <br /> </>}
                 placeholder="Type Here"
                 value={passphrase}
                 onChange={handlePassword}
             />
-            <button style={buttonStyle} onClick={handleLogin}>Login</button> <br></br>
-            <button style={buttonStyle} onClick={() => router.push("/create")}>Create New User</button><br />
+            <button style={buttonStyle} onClick={handleLogin}>Login</button>
+                </>
+            )
+            }
+            <br /><button style={buttonStyle} onClick={() => router.push("/create")}>Create New User</button><br />
         </div>
     );
 };
