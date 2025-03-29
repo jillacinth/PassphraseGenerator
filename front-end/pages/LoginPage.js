@@ -18,37 +18,6 @@ export const LoginPage = () => {
     });
     const [passphrase, setPassphrase] = useState("");
 
-    const divStyle = {
-        backgroundColor: '#f0f0f0',
-        justifyContent: 'center',
-        alignItems: 'center',
-        textAlign: 'center',
-        fontFamily: 'sans-serif',
-        height: '100vh',
-    };
-
-    const header = {
-        backgroundColor: '#6272a4',
-        color: 'white',
-        fontFamily: 'sans-serif',
-        paddingTop: '15px',
-        paddingBottom: '15px',
-        margin: 'auto',
-        alignItems: 'center',
-        textAlign: 'center',
-    };
-    
-    const buttonStyle = { 
-        backgroundColor: '#6272a4',
-        color: 'white',
-        borderRadius: '6px',
-        border: 'none',
-        cursor: "pointer",
-        fontSize: "16px",
-        transition: "background 0.3s",
-        marginBottom: '15px',
-    };
-
     // Fetch users from the database (assuming your backend is already set up)
     useEffect(() => {
         const fetchUsers = async () => {
@@ -143,8 +112,8 @@ export const LoginPage = () => {
     
 
     return (
-        <div style={divStyle}>
-            <div style={header}>
+        <div className="loginBlock">
+            <div className="header">
                 <h1>Passphrase Generator</h1>
             </div>
             <h1>Login</h1>
@@ -154,7 +123,7 @@ export const LoginPage = () => {
                 onChange={handleUsernameChange} 
                 value={usernameInput} // Bind the username to input field
             />
-            <button style={buttonStyle} onClick={handleUser}>Check User</button>
+            <button onClick={handleUser}>Check User</button>
             { userInputed === 1 && (
                 <>
                 <SensitiveInput 
@@ -168,11 +137,11 @@ export const LoginPage = () => {
                 value={passphrase}
                 onChange={handlePassword}
             />
-            <button style={buttonStyle} onClick={handleLogin}>Login</button>
+            <button onClick={handleLogin}>Login</button>
                 </>
             )
             }
-            <br /><button style={buttonStyle} onClick={() => router.push("/create")}>Create New User</button><br />
+            <br /><button onClick={() => router.push("/create")}>Create New User</button><br />
         </div>
     );
 };

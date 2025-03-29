@@ -34,34 +34,6 @@ export const CreatePassphrase = () => {
               }
           }
       }, [])
-
-    const divStyle = {
-        marginBottom: '200px',
-        fontFamily: 'sans-serif',
-    };
-
-    const header = {
-        marginBottom: '25px',
-        backgroundColor: '#6272a4',
-        color: 'white',
-        fontFamily: 'sans-serif',
-        paddingTop: '15px',
-        paddingBottom: '15px',
-        margin: 'auto',
-        textAlign: 'center',
-    };
-
-    const saveButton = {
-        backgroundColor: '#6272a4',
-        color: 'white',
-        borderRadius: '6px',
-        border: 'none',
-        cursor: "pointer",
-        fontSize: "24px",
-        transition: "background 0.3s",
-        marginBottom: '15px',
-    };
-
     
     const handleWebsiteChange = (answer) => {
         setWebsite(answer);
@@ -151,8 +123,8 @@ export const CreatePassphrase = () => {
     };
 
     return (
-        <div style={divStyle}>
-            <div style={header}>
+        <div className='createDiv'>
+            <div className='header'>
                 <h1>Passphrase Generator</h1>
             </div>
             <ReturnToMain />
@@ -176,7 +148,7 @@ export const CreatePassphrase = () => {
                 </div>
             ))}
 
-            <button style={saveButton} onClick={handleSubmit}>Save Data</button>
+            <button className='save' onClick={handleSubmit}>Save Data</button>
         </div>
     );
 };

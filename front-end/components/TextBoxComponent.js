@@ -10,13 +10,8 @@ export const TextInput = ({ label, placeholder, onChange }) => {
     if (onChange) onChange(e.target.value);
   };
 
-  const divStyle = {
-    marginBottom: '20px', // Adds space below each div
-    padding: '10px',      // Adds space inside the div
-  };
-
   return (
-    <div style={divStyle}>
+    <div className="extraPadding">
       {label && <label>{label} <br /> </label>}
       <input
         type="text"
@@ -31,12 +26,6 @@ export const TextInput = ({ label, placeholder, onChange }) => {
 export const SensitiveInput = ({ label, placeholder, onChange }) => {
   const [value, setValue] = useState("");
   const [isVisible, setIsVisible] = useState(false); // State to toggle visibility
-  
-  const divStyle = {
-    marginBottom: '20px', // Adds space below each div
-    padding: '10px',      // Adds space inside the div
-  };
-
 
   const handleChange = (e) => {
     setValue(e.target.value);
@@ -44,7 +33,7 @@ export const SensitiveInput = ({ label, placeholder, onChange }) => {
   };
 
   return (
-    <div style={divStyle}>
+    <div className="extraPadding">
       {label && <label>{label}</label>}
       <div>
         <input
@@ -69,23 +58,6 @@ export const SecurityQuestion = ({ index, onAnswerChange }) => {
   const [securityQ, setSecurityQ] = useState([]); // Store selected questions
   const [answer, setAnswer] = useState("");
   const [refreshTrigger, setRefreshTrigger] = useState(0); // Used to trigger re-fetching
-  
-  const divStyle = {
-    marginBottom: '20px',  // Adds space between this and the next div
-    padding: '15px',       // Adds space inside the div content
-    backgroundColor: '#f0f0f0', // Example background for better visibility
-    fontFamily: 'sans-serif'
-  }
-
-  const buttonStyle = { 
-    backgroundColor: '#6272a4',
-    color: 'white',
-    borderRadius: '6px',
-    border: 'none',
-    cursor: "pointer",
-    fontSize: "16px",
-    transition: "background 0.3s"
-  }
 
   const refreshQuestions = () => {
       setRefreshTrigger(prev => prev + 1); //sets trigger for refresh
@@ -110,7 +82,7 @@ export const SecurityQuestion = ({ index, onAnswerChange }) => {
   };
 
   return (
-    <div style={divStyle}>
+    <div className="blockDiv">
       {securityQ ? (  // Since securityQ is a single object, no need for .map()
           <SensitiveInput
               label={securityQ.QContent}
@@ -120,7 +92,7 @@ export const SecurityQuestion = ({ index, onAnswerChange }) => {
       ) : (
           <p>Loading question...</p>
       )}
-      <button style={buttonStyle} onClick={refreshQuestions}>Refresh Question</button>
+      <button className="smallButton" onClick={refreshQuestions}>Refresh Question</button>
     </div>
   );
 };

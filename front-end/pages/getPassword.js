@@ -18,12 +18,6 @@ export const GetPassword = () => {
     const [currUser, setCurrentUser] = useState("");
     const [userPassphrases, setUserPassphrases] = useState([]);
     //const input = "";
-
-    const websiteButton = {
-        marginBottom: '10px', /* Adds space below each button */
-        display: 'block', /* Ensures buttons are on separate lines */
-    };
-
     useEffect(() => {
         if (typeof window !== "undefined") {
             const isAuthenticated = localStorage.getItem("authenticated");
@@ -150,15 +144,17 @@ export const GetPassword = () => {
 
     return (
         <div>
+            <div className='header'>
+                <h1>Passphrase Generator</h1>
+            </div>
             <ReturnToMain />
-            <h1>Retrieve Password</h1>
-            <h2>Sites with Passphrases</h2>
-            <ul>
+            <h2>Passphrases</h2>
+            <ul className='blockDiv'>
                 {websiteList.length === 0 ?  (
                     <p>No Entries</p>
                 ) : (
                 websiteList.map((website, index) => (
-                    <button style={websiteButton}
+                    <button 
                         key={index} 
                         onClick={() => handleWebsiteClick(website)} 
                         className="website-button"
@@ -182,9 +178,9 @@ export const GetPassword = () => {
                         onChange={handlePasswordInput} 
                         value={userInput}
                     />
-                    <button style={websiteButton} onClick={handlePasswordCheck}>Check</button>
-                    <button style={websiteButton} onClick={() => router.push("/create")}>Forgot Password? (this will delete password and you can remake it)</button>
-                    <button style={websiteButton} onClick={handleDelete}>Delete</button>
+                    <button onClick={handlePasswordCheck}>Check</button>
+                    <button onClick={() => router.push("/create")}>Forgot Password? (this will delete password and you can remake it)</button>
+                    <button onClick={handleDelete}>Delete</button>
                 </>
             )}
 

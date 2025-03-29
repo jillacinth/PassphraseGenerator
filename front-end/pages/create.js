@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { ReturnToMain } from '../components/Menu';
 import { SecurityQuestion, TextInput } from '../components/TextBoxComponent';
 import { SALT } from '../components/salt';
+//import '../styles/styles.css';
 
 export const Create = () => {
     const router = useRouter(); // Use Next.js router
@@ -37,32 +38,6 @@ export const Create = () => {
         q4: { QNum: null},
         q5: { QNum: null},
     });
-
-    const divStyle = {
-        marginBottom: '200px',
-        fontFamily: 'sans-serif',
-    };
-    const header = {
-        marginBottom: '25px',
-        backgroundColor: '#6272a4',
-        color: 'white',
-        fontFamily: 'sans-serif',
-        paddingTop: '15px',
-        paddingBottom: '15px',
-        margin: 'auto',
-        textAlign: 'center',
-    };
-
-    const saveButton = {
-        backgroundColor: '#6272a4',
-        color: 'white',
-        borderRadius: '6px',
-        border: 'none',
-        cursor: "pointer",
-        fontSize: "24px",
-        transition: "background 0.3s",
-        marginBottom: '15px',
-    };
 
     const handleUsernameChange = (answer) => {
         setSecurityAnswers((prev) => ({
@@ -118,8 +93,8 @@ export const Create = () => {
     };
 
     return (
-        <div style={divStyle}>
-            <div style={header}>
+        <div className='createDiv'>
+            <div className='header'>
                 <h1>Passphrase Generator</h1>
             </div>
             <ReturnToMain />
@@ -142,7 +117,7 @@ export const Create = () => {
                 </div>
             ))}
 
-            <button style={saveButton} onClick={handleSubmit}>Save Data</button>
+            <button className='save' onClick={handleSubmit}>Save Data</button>
         </div>
     );
 };

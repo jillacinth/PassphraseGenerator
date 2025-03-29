@@ -1,0 +1,139 @@
+div{
+    font-family: sans-serif;
+}
+
+button {
+    background-color: #6272a4;
+    color: white;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease-in-out;
+    margin: 10px; /* Adds spacing around the button */
+}
+
+/* Hover effect */
+button:hover {
+    background-color: #536199; /* Slightly darker shade on hover */
+}
+
+/* Optional: Add focus outline for accessibility */
+button:focus {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+}
+
+
+.header {
+    margin-bottom: 50px;
+    background-color: #6272a4;
+    color: white;
+    font-family: sans-serif;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin: auto;
+    text-align: center;
+}
+
+.save {
+    background-color: #6272a4;
+    color: white;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    padding: 10px 20px; /* Adds space inside the button */
+    transition: background-color 0.3s ease-in-out;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* Hover effect */
+.save:hover {
+    background-color: #536199; /* Slightly darker shade on hover */
+}
+
+/* Optional: Add focus outline for accessibility */
+.save:focus {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+}
+
+.createDiv {
+    margin-bottom: 200px;
+    font-family: sans-serif;
+}
+
+.extraPadding {
+    margin-bottom: 20px;
+    padding: '10px';
+}
+
+.blockDiv { /* Grayish blocks*/
+    display: block;
+    visibility: visible;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #F0F0F0;
+    font-family: sans-serif;
+}
+
+.loginBlock {
+    background-color: #f0f0f0;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-family: sans-serif;
+    height: 100vh;
+}
+
+.menu {
+    margin-top: 25px;
+    margin-bottom: 200px;
+    background-color: #f0f0f0;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-family: sans-serif;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    width: 80%;
+    margin: auto;
+}
+
+.returnMain { 
+    margin-top: 10px;
+    background-color: #f0f0f0;
+    color: #6272a4;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.returnMain:hover {
+    background-color: #f0f0f07b; /* Slightly darker shade on hover */
+}
+
+/* Optional: Add focus outline for accessibility */
+.returnMain:focus {
+    outline: 2px solid #f0f0f07b;
+    outline-offset: 2px;
+}
+
+.mainMenu {
+    background-color: transparent;
+    color: #6272a4;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.mainMenu:hover {
+    background-color: #6272a4;
+    color: #f0f0f0f0;
+}

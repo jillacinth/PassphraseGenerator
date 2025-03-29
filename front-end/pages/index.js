@@ -2,21 +2,11 @@
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { Menu } from '../components/Menu';
+//import '../styles/styles.css';
 
 
 const Home = () => {
   const router = useRouter();
-  
-  const header = {
-    marginBottom: '50px',
-    backgroundColor: '#6272a4',
-    color: 'white',
-    fontFamily: 'sans-serif',
-    paddingTop: '15px',
-    paddingBottom: '15px',
-    margin: 'auto',
-    textAlign: 'center',
-};
 
   useEffect(() => {
       if (typeof window !== "undefined") {
@@ -29,7 +19,7 @@ const Home = () => {
   }, []);
   return (
     <div>
-      <div style={header}>
+      <div className='header'>
         <h1>Passphrase Generator</h1>
       </div>
       <Menu />
