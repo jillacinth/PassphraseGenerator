@@ -2,8 +2,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { ReturnToMain } from '../components/Menu';
 import { TextInput } from '../components/TextBoxComponent';
-
-
+import cryptoRandomString from 'crypto-random-string';
 
 export const GeneratePassword = () => {
     const router = useRouter(); // Use Next.js router
@@ -36,6 +35,56 @@ export const GeneratePassword = () => {
         setUsername(answer);
     };
 
+    const handleCapital = () => {
+        setPassOptions((prev) => ({
+            ...prev, 
+            capital: true,
+        }));;
+    };
+
+    const handleNum = () => {
+        setPassOptions((prev) => ({
+            ...prev, 
+            nums: true,
+        }));
+    };
+
+    const handleSpecial = () => {
+        setPassOptions((prev) => ({
+            ...prev, 
+            special: true,
+        }));
+    };
+
+    const handleLength = (e) => {
+        let len = parseInt(e.target.value, 10); // Convert to an integer
+        if (isNaN(len) || len <= 0) {
+            len = 12; // Default length if invalid
+        }
+        setPassOptions((prev) => ({ ...prev, length: len }));
+    };
+    
+    
+
+    const handleGenerate = async (e) => {
+        let result = '';
+        let characters = 'abcdefghijklmnopqrstuvwxyz';
+
+        if (!passOptions.length || isNaN(passOptions.length) || passOptions.length < 1) {
+            alert("Please specify a valid password length.");
+            return;
+        }
+        //alert(passOptions.length);
+        const len = passOptions.length;
+    
+        if (passOptions.capital) characters += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        if (passOptions.nums) characters += '0123456789';
+        if (passOptions.special) characters += '~`!@#$%^&*()-_+={}[]|\\;:"<>,./?';
+    
+        result = cryptoRandomString({ length: len, characters: characters });
+        setPassword(result);
+    };
+
     const handleSubmit = async (e) => {        
         e.preventDefault();
 
@@ -49,17 +98,22 @@ export const GeneratePassword = () => {
             return; // Exit early if no username is provided
         }
 
+        if (password == "") {
+            alert("Generate a Password!");
+            return;
+        }
+
         const randPassData = {
-            encPassword: encPass, // Assuming this is already hashed
+            encPassword: password, // need to encrypt this
             user: currentUser,
             username: username,
             website: website,
         };
 
         console.log(randPassData);
-        await db.randomPass.add(randPassData);
+        //await db.randomPass.add(randPassData);
         alert(`Password for ${website} has been added`);
-        window.location.reload();
+        //window.location.reload();
     };
 
     return (
@@ -71,11 +125,12 @@ export const GeneratePassword = () => {
             <h2>Random Password Generator</h2>
             <TextInput label="Website" placeholder="Type here" onChange={handleWebsiteChange}/>
             <TextInput label="Username/Email" placeholder="Type here" onChange={handleUsernameChange}/>
-            <input type='checkbox' />Capitalization<br />
-            <input type='checkbox' />Numbers<br />
-            <input type='checkbox' />Special Characters<br />
-            <input type="number" placeholder='Password Length' /><br />
-            <button>Generate Password</button> <br />
+            <input type='checkbox' checked={passOptions.capital} onChange={handleCapital}/>Capitalization<br />
+            <input type='checkbox' checked={passOptions.nums} onChange={handleNum}/>Numbers<br />
+            <input type='checkbox' checked={passOptions.special} onChange={handleSpecial}/>Special Characters<br />
+            <input type="number" placeholder='Password Length' onChange={handleLength}/><br />
+            <button onClick={handleGenerate}>Generate Password</button> <br />
+            <div>{password}</div>
             <button className='save' onClick={handleSubmit}>Save Data</button>
         </div>
     );
