@@ -1,0 +1,145 @@
+html {
+    background-image: url('https://images.steamusercontent.com/ugc/2077888936786332366/E689E04B1B9B6B6566FE14A9010AB1C818B03F1F/?imw=512&&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false');
+}
+
+div{
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    color: red;
+}
+
+button {
+    background-color: red;
+    color: black;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease-in-out;
+    margin: 10px; /* Adds spacing around the button */
+}
+
+/* Hover effect */
+button:hover {
+    background-color: #536199; /* Slightly darker shade on hover */
+}
+
+/* Optional: Add focus outline for accessibility */
+button:focus {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+}
+
+
+.header {
+    margin-bottom: 50px;
+    background-color: yellow;
+    color: black;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin: auto;
+    text-align: center;
+}
+
+.save {
+    background-color: yellow;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    color: black;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    padding: 10px 20px; /* Adds space inside the button */
+    transition: background-color 0.3s ease-in-out;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* Hover effect */
+.save:hover {
+    background-color: #536199; /* Slightly darker shade on hover */
+}
+
+/* Optional: Add focus outline for accessibility */
+.save:focus {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+}
+
+.createDiv {
+    margin-bottom: 200px;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+
+.extraPadding {
+    margin-bottom: 20px;
+    padding: '10px';
+}
+
+.blockDiv { /* Grayish blocks*/
+    display: block;
+    visibility: visible;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: yellow;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+
+.loginBlock {
+    background-color: yellow;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    height: 100vh;
+}
+
+.menu {
+    margin-top: 25px;
+    margin-bottom: 200px;
+    /*background-color: yellow;*/
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    width: 80%;
+    margin: auto;
+}
+
+.returnMain { 
+    margin-top: 10px;
+    background-color: yellow;
+    color: yellow;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.returnMain:hover {
+    background-color: yellow7b; /* Slightly darker shade on hover */
+}
+
+/* Optional: Add focus outline for accessibility */
+.returnMain:focus {
+    outline: 2px solid yellow7b;
+    outline-offset: 2px;
+}
+
+.mainMenu {
+    background-color: transparent;
+    color: yellow;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.mainMenu:hover {
+    background-color: yellow;
+    color: yellow;
+}
