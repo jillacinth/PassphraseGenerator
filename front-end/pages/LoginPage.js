@@ -86,7 +86,7 @@ export const LoginPage = () => {
                 alert("User not found. Please try again or create a new account.");
             }
         } else {
-            console.log("No users found or data is empty.");
+            alert("No users found or data is empty.");
         }
     }
 

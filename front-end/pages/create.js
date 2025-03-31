@@ -73,6 +73,22 @@ export const Create = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (securityAnswers.user.username == "") {
+            alert("Username is required");
+            return;
+        }
+
+         // Check if any security question is unanswered
+        const unansweredQuestions = [1, 2, 3, 4, 5].some(num => 
+            !securityAnswers[`q${num}_answer`] || securityAnswers[`q${num}_answer`].trim() === ""
+        );
+
+        if (unansweredQuestions) {
+            alert("All five security questions must be answered.");
+            return;
+        }
+
         if (users.find((user) => user.Username === securityAnswers.user.username)) { 
             alert("Username already in use");
             return;

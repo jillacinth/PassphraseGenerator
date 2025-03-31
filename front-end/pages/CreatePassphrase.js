@@ -78,6 +78,21 @@ export const CreatePassphrase = () => {
     const handleSubmit = async (e) => {        
         e.preventDefault();
 
+        if (website == "") {
+            alert('Website is required!');
+            return; // Exit early if no website is provided
+        }
+
+        if (username == "") {
+            alert('Username is required!');
+            return; // Exit early if no username is provided
+        }
+
+        if (qAnswer1 == "" || qAnswer2 == "" || qAnswer3 == "" || qAnswer4 == "" || qAnswer5 == "") {
+            alert('All five security questions must be answered.');
+            return; // Exit early if any security question is unanswered
+        }
+
         // Update passphrase based on the answers provided for q1 to q5
         const passphraseGenerated = [qAnswer1, qAnswer2, qAnswer3, qAnswer4, qAnswer5]
         .map((ans) => ans || "")  // Use current answers
