@@ -14,6 +14,7 @@ export const Menu = () => {
         <div className="menu">
             <button className="mainMenu" onClick={() => router.push("/getPassword")}>Retrieve Password</button> <br></br>
             <button className="mainMenu" onClick={() => router.push("/CreatePassphrase")}>Create Passphrase</button><br></br>
+            <button className="mainMenu" onClick={() => router.push("/GeneratePassword")}>Generate Password</button><br></br>
             <button className="mainMenu" onClick={handleLogout}>Logout</button><br></br>
         </div>
     );
