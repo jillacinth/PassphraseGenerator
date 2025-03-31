@@ -114,7 +114,7 @@ button:focus {
 }
 
 .returnMain:hover {
-    background-color: #f0f0f07b; /* Slightly darker shade on hover */
+    background-color: #6e6e6e7b; /* Slightly darker shade on hover */
 }
 
 /* Optional: Add focus outline for accessibility */
