@@ -1,30 +1,23 @@
-import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import CryptoJS from 'crypto-js';
+import cryptoRandomString from 'crypto-random-string';
+import React, { useState } from 'react';
+import secureLocalStorage from "react-secure-storage";
 import { ReturnToMain } from '../components/Menu';
 import { TextInput } from '../components/TextBoxComponent';
-import cryptoRandomString from 'crypto-random-string';
 
 export const GeneratePassword = () => {
-    const router = useRouter(); // Use Next.js router
+    //const router = useRouter(); // Use Next.js router
     const [website, setWebsite] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const currentUser = typeof window !== "undefined" ? localStorage.getItem("currentUser") : "";
+    const currentUser = typeof window !== "undefined" ? secureLocalStorage.getItem("currentUser") : "";
     const [passOptions, setPassOptions] = useState({
         capital: false,
         nums: false,
         special: false,
         length: null,
-    })
-
-    useEffect(() => {
-          if (typeof window !== "undefined") {
-              const isAuthenticated = localStorage.getItem("authenticated");
-              if (!isAuthenticated) {
-                  router.push("/LoginPage");
-              }
-          }
-      }, [])
+    });
+    const key = secureLocalStorage.getItem("key");
       
     const handleWebsiteChange = (answer) => {
         setWebsite(answer);
@@ -38,21 +31,21 @@ export const GeneratePassword = () => {
     const handleCapital = () => {
         setPassOptions((prev) => ({
             ...prev, 
-            capital: true,
+            capital: !prev.capital,
         }));;
     };
 
     const handleNum = () => {
         setPassOptions((prev) => ({
             ...prev, 
-            nums: true,
+            nums: !prev.nums,
         }));
     };
 
     const handleSpecial = () => {
         setPassOptions((prev) => ({
             ...prev, 
-            special: true,
+            special: !prev.special,
         }));
     };
 
@@ -72,6 +65,9 @@ export const GeneratePassword = () => {
 
         if (!passOptions.length || isNaN(passOptions.length) || passOptions.length < 1) {
             alert("Please specify a valid password length.");
+            return;
+        } else if (passOptions.length > 100){
+            alert("Specified length is too long");
             return;
         }
         //alert(passOptions.length);
@@ -104,16 +100,16 @@ export const GeneratePassword = () => {
         }
 
         const randPassData = {
-            encPassword: password, // need to encrypt this
-            user: currentUser,
-            username: username,
-            website: website,
+            encPassword: CryptoJS.AES.encrypt(password, key).toString(), // need to encrypt this
+            user: CryptoJS.AES.encrypt(currentUser, key).toString(),
+            username: CryptoJS.AES.encrypt(username, key).toString(),
+            website: CryptoJS.AES.encrypt(website, key).toString(),
         };
 
         console.log(randPassData);
-        //await db.randomPass.add(randPassData);
+        await db.randomPass.add(randPassData);
         alert(`Password for ${website} has been added`);
-        //window.location.reload();
+        window.location.reload();
     };
 
     return (
@@ -128,10 +124,17 @@ export const GeneratePassword = () => {
             <input type='checkbox' checked={passOptions.capital} onChange={handleCapital}/>Capitalization<br />
             <input type='checkbox' checked={passOptions.nums} onChange={handleNum}/>Numbers<br />
             <input type='checkbox' checked={passOptions.special} onChange={handleSpecial}/>Special Characters<br />
-            <input type="number" placeholder='Password Length' onChange={handleLength}/><br />
+            <label htmlFor='passwordLength'>Password Length</label>
+            <input type="number" id="passwordLength" placeholder='Type here' onChange={handleLength}/><br />
             <button onClick={handleGenerate}>Generate Password</button> <br />
-            <div>{password}</div>
-            <button className='save' onClick={handleSubmit}>Save Data</button>
+            { password && (
+                <>
+                <div style={{textAlign: 'center'}} className='blockDiv'>{password}</div>
+                <button className='save' onClick={handleSubmit}>Save Data</button>
+                </>
+            )}
+
+            
         </div>
     );
 };

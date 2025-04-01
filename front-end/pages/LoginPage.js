@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import secureLocalStorage from "react-secure-storage";
 import { SensitiveInput, TextInput } from '../components/TextBoxComponent';
 
 export const LoginPage = () => {
@@ -97,14 +98,13 @@ export const LoginPage = () => {
     const handleLogin = () => {
         const user = users.find((user) => user.Username === usernameInput);    
         const hashedPassphrase = bcrypt.hashSync(passphrase, user.HashSalt);
-        //console.log(user.HashPass);
-        //console.log(hashedPassphrase);
+
         if (hashedPassphrase === user.HashPass) {
-            //console.log("access Granted");
-            localStorage.setItem("authenticated", "true"); //user logged in and can access other pages
-            localStorage.setItem("currentUser", user.Username); //user logged in and can access other pages
+            secureLocalStorage.setItem("key", passphrase);
+            secureLocalStorage.setItem("authenticated", "true"); //user logged in and can access other pages
+            secureLocalStorage.setItem("currentUser", user.Username); //user logged in and can access other pages
             router.push("/");
-            //alert("Signed in as " + localStorage.getItem("currentUser"));
+
         } else {
             alert("Incorrect Password");
         }

@@ -1,12 +1,12 @@
 import { useRouter } from "next/router";
 import React from "react";
+import secureLocalStorage from "react-secure-storage";
 
 export const Menu = () => {
     const router = useRouter(); // Use Next.js router
 
     const handleLogout = () => {
-        localStorage.removeItem("authenticated");
-        localStorage.removeItem("currentUser");
+        secureLocalStorage.clear();
         router.push("/LoginPage");
     };
 

@@ -1,39 +1,33 @@
 import bcrypt from 'bcryptjs';
-import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import CryptoJS from 'crypto-js';
+import React, { useState } from 'react';
+import secureLocalStorage from "react-secure-storage";
 import { ReturnToMain } from '../components/Menu';
 import { SALT } from '../components/salt';
 import { SecurityQuestion, TextInput } from '../components/TextBoxComponent';
 import { db } from '../db';
 
-
 export const CreatePassphrase = () => {
-    const router = useRouter(); // Use Next.js router
+    const key = secureLocalStorage.getItem("key");
     const [website, setWebsite] = useState("");
     const [username, setUsername] = useState("");
     const [passphrase, setPassphrase] = useState("");
     const salt = SALT;
-    const [q1, setQ1] = useState(0);
-    const [q2, setQ2] = useState(0);
-    const [q3, setQ3] = useState(0);
-    const [q4, setQ4] = useState(0);
-    const [q5, setQ5] = useState(0);
-    const [qAnswer1, setQAnswer1] = useState("");
-    const [qAnswer2, setQAnswer2] = useState("");
-    const [qAnswer3, setQAnswer3] = useState("");
-    const [qAnswer4, setQAnswer4] = useState("");
-    const [qAnswer5, setQAnswer5] = useState("");
-    const currentUser = typeof window !== "undefined" ? localStorage.getItem("currentUser") : "";
-
-
-      useEffect(() => {
-          if (typeof window !== "undefined") {
-              const isAuthenticated = localStorage.getItem("authenticated");
-              if (!isAuthenticated) {
-                  router.push("/LoginPage");
-              }
-          }
-      }, [])
+    const [questions, setQuestion] = useState({
+        q1: "",
+        q2: "",
+        q3: "",
+        q4: "",
+        q5: "",
+    });
+    const [qAnswers, setQAnswer] = useState({
+        q1: "",
+        q2: "",
+        q3: "",
+        q4: "",
+        q5: "",
+    });
+    const currentUser = typeof window !== "undefined" ? secureLocalStorage.getItem("currentUser") : "";
     
     const handleWebsiteChange = (answer) => {
         setWebsite(answer);
@@ -45,30 +39,59 @@ export const CreatePassphrase = () => {
     };
     
 
-    const handleSecurityAnswerChange = (index, QNum, answer) => {
-
-
+    const handleSecurityAnswerChange = (index, qObj, answer) => {
+        const qContent = qObj.QContent;
         //different questions
         switch (index) {
             case 1:
-                setQ1(QNum);
-                setQAnswer1(answer);
+                setQuestion((prev) => ({
+                    ...prev, 
+                    q1: qContent,
+                }));
+                setQAnswer((prev) => ({
+                    ...prev, 
+                    q1: answer,
+                }));
                 break;
             case 2:
-                setQ2(QNum);
-                setQAnswer2(answer);
+                setQuestion((prev) => ({
+                    ...prev, 
+                    q2: qContent,
+                }));
+                setQAnswer((prev) => ({
+                    ...prev, 
+                    q2: answer,
+                }));
                 break;
             case 3:
-                setQ3(QNum);
-                setQAnswer3(answer);
+                setQuestion((prev) => ({
+                    ...prev, 
+                    q3: qContent,
+                }));
+                setQAnswer((prev) => ({
+                    ...prev, 
+                    q3: answer,
+                }));
                 break;
             case 4:
-                setQ4(QNum);
-                setQAnswer4(answer);
+                setQuestion((prev) => ({
+                    ...prev, 
+                    q4: qContent,
+                }));
+                setQAnswer((prev) => ({
+                    ...prev, 
+                    q4: answer,
+                }));
                 break;
             case 5:
-                setQ5(QNum);
-                setQAnswer5(answer);
+                setQuestion((prev) => ({
+                    ...prev, 
+                    q5: qContent,
+                }));
+                setQAnswer((prev) => ({
+                    ...prev, 
+                    q5: answer,
+                }));
                 break;
             default:
                 break;
@@ -77,6 +100,8 @@ export const CreatePassphrase = () => {
 
     const handleSubmit = async (e) => {        
         e.preventDefault();
+
+        console.log(await db.passphrases.count());
 
         if (website == "") {
             alert('Website is required!');
@@ -88,52 +113,43 @@ export const CreatePassphrase = () => {
             return; // Exit early if no username is provided
         }
 
-        if (qAnswer1 == "" || qAnswer2 == "" || qAnswer3 == "" || qAnswer4 == "" || qAnswer5 == "") {
+        if (!qAnswers.q1 || !qAnswers.q2 || !qAnswers.q3 || !qAnswers.q4 || !qAnswers.q5) {
             alert('All five security questions must be answered.');
             return; // Exit early if any security question is unanswered
         }
 
         // Update passphrase based on the answers provided for q1 to q5
-        const passphraseGenerated = [qAnswer1, qAnswer2, qAnswer3, qAnswer4, qAnswer5]
-        .map((ans) => ans || "")  // Use current answers
-        .join(""); // Concatenate answers
+        const passphraseGenerated = Object.values(qAnswers).join("");
+
+        console.log("Passphrase is " + passphraseGenerated);
         
         const hashedPassword = bcrypt.hashSync(passphraseGenerated, salt);
-
+        console.log(hashedPassword);
         // Update the passphrase state
         setPassphrase(hashedPassword);
 
-        //console.log(passphraseGenerated);
-        //console.log(hashedPassword);
-
-
-        if (website == "") {
-            console.error('Website is required!');
-            return; // Exit early if no website is provided
-        }
-
         const passphraseData = {
-            passphrase: passphrase, // Assuming this is already hashed
-            user: currentUser,
-            username: username,
-            website: website,
-            salt: salt,
-            q1: q1,
-            q2: q2,
-            q3: q3,
-            q4: q4,
-            q5: q5
+            passphrase: CryptoJS.AES.encrypt(hashedPassword, key).toString(),
+            user: CryptoJS.AES.encrypt(currentUser, key).toString(),
+            username: CryptoJS.AES.encrypt(username, key).toString(),
+            website: CryptoJS.AES.encrypt(website, key).toString(),
+        salt: CryptoJS.AES.encrypt(salt, key).toString(),
+        q1: CryptoJS.AES.encrypt(String(questions.q1 || ""), key).toString(),
+        q2: CryptoJS.AES.encrypt(String(questions.q2 || ""), key).toString(),
+        q3: CryptoJS.AES.encrypt(String(questions.q3 || ""), key).toString(),
+        q4: CryptoJS.AES.encrypt(String(questions.q4 || ""), key).toString(),
+        q5: CryptoJS.AES.encrypt(String(questions.q5 || ""), key).toString(),
         };
 
-        console.log(passphraseData);
-        //const allUsers = await db.passphrases.toArray();
-        //console.log(allUsers);
-
         //adds to local database
-        await db.passphrases.add(passphraseData);
-        //allUsers = await db.passphrases.toArray();
-        //console.log(allUsers);
-        alert(`Password for ${website} has been added`);
+        //console.log(passphraseData);
+
+        try {
+            await db.passphrases.add(passphraseData);
+            alert(`Password for ${website} has been added`);
+          } catch (error) {
+            console.error('Error adding passphrase:', error);
+          }
         window.location.reload();
     };
 

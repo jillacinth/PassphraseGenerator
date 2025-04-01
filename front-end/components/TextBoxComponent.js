@@ -77,7 +77,7 @@ export const SecurityQuestion = ({ index, onAnswerChange }) => {
   const handleAnswerChange = (value) => {
     setAnswer(value);
     if (securityQ) {
-      onAnswerChange(index, securityQ.QNum, value);
+      onAnswerChange(index, securityQ, value);
     }
   };
 
