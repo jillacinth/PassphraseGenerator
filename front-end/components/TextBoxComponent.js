@@ -68,7 +68,7 @@ export const SecurityQuestion = ({ index, onAnswerChange }) => {
           .then(res => res.json())
           .then(data => {
             setSecurityQ(data[0]);
-            onAnswerChange(index,data[0].QNum, ""); //QNum is updated
+            onAnswerChange(index,data[0], ""); //QNum is updated
           })
           .catch(err => console.error("Error fetching data:", err));
   }, [refreshTrigger]); // Refreshes questions when button hit

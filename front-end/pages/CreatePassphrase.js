@@ -101,12 +101,33 @@ export const CreatePassphrase = () => {
     const handleSubmit = async (e) => {        
         e.preventDefault();
 
-        console.log(await db.passphrases.count());
+        if (await db.passphrases.where('user').equals(currentUser).count() > 0) {
+            const allPassphrases = await db.passphrases.toArray();
+            const decryptedEntries = allPassphrases.map(entry => ({
+                passphrase: CryptoJS.AES.decrypt(entry.passphrase, key).toString(CryptoJS.enc.Utf8),
+                user: CryptoJS.AES.decrypt(entry.user, key).toString(CryptoJS.enc.Utf8),
+                username: CryptoJS.AES.decrypt(entry.username, key).toString(CryptoJS.enc.Utf8),
+                website: CryptoJS.AES.decrypt(entry.website, key).toString(CryptoJS.enc.Utf8),
+                salt: CryptoJS.AES.decrypt(entry.salt, key).toString(CryptoJS.enc.Utf8),
+                q1: CryptoJS.AES.decrypt(entry.q1, key).toString(CryptoJS.enc.Utf8),
+                q2: CryptoJS.AES.decrypt(entry.q2, key).toString(CryptoJS.enc.Utf8),
+                q3: CryptoJS.AES.decrypt(entry.q3, key).toString(CryptoJS.enc.Utf8),
+                q4: CryptoJS.AES.decrypt(entry.q4, key).toString(CryptoJS.enc.Utf8),
+                q5: CryptoJS.AES.decrypt(entry.q5, key).toString(CryptoJS.enc.Utf8),
+            }));
+            const existingEntry = decryptedEntries.find(entry => entry.user === currUser && entry.website === website);
+
+            if (existingEntry) {
+                alert('User already has password for this website');
+                return;
+            }
+        }
+
 
         if (website == "") {
             alert('Website is required!');
             return; // Exit early if no website is provided
-        }
+        } 
 
         if (username == "") {
             alert('Username is required!');

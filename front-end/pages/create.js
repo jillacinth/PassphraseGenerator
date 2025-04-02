@@ -32,11 +32,11 @@ export const Create = () => {
         user: {username: ""},
         passphrase: { answer: ""},
         salt: {pswdSalt: ""},
-        q1: { QNum: null},
-        q2: { QNum: null},
-        q3: { QNum: null},
-        q4: { QNum: null},
-        q5: { QNum: null},
+        q1: { QNum: 0},
+        q2: { QNum: 0},
+        q3: { QNum: 0},
+        q4: { QNum: 0},
+        q5: { QNum: 0},
     });
 
     const handleUsernameChange = (answer) => {
@@ -47,12 +47,13 @@ export const Create = () => {
     };
     
 
-    const handleSecurityAnswerChange = (index, QNum, answer) => {
+    const handleSecurityAnswerChange = (index, qObj, answer) => {
+        const qNum = qObj.QNum;
         setSecurityAnswers((prev) => {
             // Ensure we store QNum separately and answers in a different structure
             const updatedAnswers = {
                 ...prev,
-                [`q${index}`]: { QNum }, // Store only QNum for q1 to q5
+                [`q${index}`]: { qNum }, // Store only QNum for q1 to q5
                 [`q${index}_answer`]: answer, // Store answers separately
             };
     
@@ -79,6 +80,11 @@ export const Create = () => {
             return;
         }
 
+        if (users.find((user) => user.Username === securityAnswers.user.username)) { 
+            alert("Username already in use");
+            return;
+        }
+
          // Check if any security question is unanswered
         const unansweredQuestions = [1, 2, 3, 4, 5].some(num => 
             !securityAnswers[`q${num}_answer`] || securityAnswers[`q${num}_answer`].trim() === ""
@@ -89,19 +95,48 @@ export const Create = () => {
             return;
         }
 
-        if (users.find((user) => user.Username === securityAnswers.user.username)) { 
-            alert("Username already in use");
-            return;
-        }
+    // Structure data to match backend format
+        const transformedData = {
+            user: {
+                username: securityAnswers.user.username
+            },
+            passphrase: {
+                answer: securityAnswers.passphrase.answer
+            },
+            salt: {
+                pswdSalt: securityAnswers.salt.pswdSalt
+            },
+            q1: {
+                QNum: securityAnswers.q1.qNum
+            },
+            q2: {
+                QNum: securityAnswers.q2.qNum
+            },
+            q3: {
+                QNum: securityAnswers.q3.qNum
+            },
+            q4: {
+                QNum: securityAnswers.q4.qNum
+            },
+            q5: {
+                QNum: securityAnswers.q5.qNum
+            }
+        };
         try {
             const response = await fetch('http://localhost:8081/save-passphrase', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(securityAnswers)
+                body: JSON.stringify(transformedData)
             });
 
+            console.log(securityAnswers.q5.qNum);
+
+            console.log(transformedData);
+            console.log(securityAnswers);
+            console.log("Status: " + response.status);
+            console.log("Headers: " + response.headers);
+
             const data = await response.json();
-            alert("Acccount and passphrase saved successfully!");
             router.push("/LoginPage");
         } catch (error) {
             console.error("Error saving account details: ", error);

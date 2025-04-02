@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import secureLocalStorage from "react-secure-storage";
 import { ReturnToMain } from '../components/Menu';
 import { TextInput } from '../components/TextBoxComponent';
+import { db } from '../db';
 
 export const GeneratePassword = () => {
     //const router = useRouter(); // Use Next.js router
@@ -84,10 +85,26 @@ export const GeneratePassword = () => {
     const handleSubmit = async (e) => {        
         e.preventDefault();
 
+        if (await db.passwords.where('user').equals(currentUser).count() > 0) {
+            const allPasswords = await db.passwords.toArray();
+            const decryptedEntries = allPasswords.map(entry => ({
+            password: CryptoJS.AES.decrypt(entry.password, key).toString(CryptoJS.enc.Utf8),
+            user: CryptoJS.AES.decrypt(entry.user, key).toString(CryptoJS.enc.Utf8),
+            username: CryptoJS.AES.decrypt(entry.username, key).toString(CryptoJS.enc.Utf8),
+            website: CryptoJS.AES.decrypt(entry.website, key).toString(CryptoJS.enc.Utf8),
+        }));
+        const existingEntry = decryptedEntries.find(entry => entry.user === currUser && entry.website === website);
+
+            if (existingEntry) {
+                alert('User already has password for this website');
+                return;
+            }
+        }
+
         if (website == "") {
             alert('Website is required!');
             return; // Exit early if no website is provided
-        }
+        } 
 
         if (username == "") {
             alert('Username is required!');
@@ -100,14 +117,14 @@ export const GeneratePassword = () => {
         }
 
         const randPassData = {
-            encPassword: CryptoJS.AES.encrypt(password, key).toString(), // need to encrypt this
+            password: CryptoJS.AES.encrypt(password, key).toString(), // need to encrypt this
             user: CryptoJS.AES.encrypt(currentUser, key).toString(),
             username: CryptoJS.AES.encrypt(username, key).toString(),
             website: CryptoJS.AES.encrypt(website, key).toString(),
         };
 
         console.log(randPassData);
-        await db.randomPass.add(randPassData);
+        await db.passwords.add(randPassData);
         alert(`Password for ${website} has been added`);
         window.location.reload();
     };
